@@ -1,6 +1,6 @@
 <?php
     //customizable vars
-    $magentoRoot = 'src'; //relative to this script location
+    $magentoRoot = ''; //relative to this script location
 
     
     /**********************************************/
@@ -193,7 +193,6 @@
                 'fix-perms' => 'fixPerms',
                 //'scope' => 'setScope',
                 'status' => 'status',
-                'update' => 'selfUpdate',
                 //'help' => '',
             );
         }
@@ -306,7 +305,6 @@
                 OutputCLI::columnize('-h, --hints', 2, 'Enables and disables magento template hints for the specified store. If ? is used, a list of the store codes will be shown.', self::SECOND_COLUMN_LEFT),
                 OutputCLI::columnize('-e, --exec', 2, 'Executes the php file in the provided path. Takes a relative file path as an argument.', self::SECOND_COLUMN_LEFT),
                 OutputCLI::columnize('--fix-perms', 6, 'Fix permissions for development enviroment for the specified OS, on the project directory. Supported OS: debian, centos', self::SECOND_COLUMN_LEFT),
-                OutputCLI::columnize('--update', 6, 'Get the newest version of this script', self::SECOND_COLUMN_LEFT),
                 OutputCLI::columnize('--scope', 6, 'Tries to perform the current action in the selected scope (this option does not always have effect). Format is: "website:code" or "store:code"', self::SECOND_COLUMN_LEFT),
                 OutputCLI::columnize('--help', 6, 'This help.', self::SECOND_COLUMN_LEFT),
             );
@@ -424,15 +422,6 @@
             else {
                 echo 'Scope cannot be empty', $n;
             }
-        }
-        
-        /**
-         * Does a svn export in the current script directory
-         */
-        public function selfUpdate()
-        {
-            $command = 'svn export https://sources.bcn.intranet/svn/devshare/trunk/magento/scripts/mage_toolbox/mage_toolbox.php';
-            echo shell_exec($command);
         }
         
         /**
