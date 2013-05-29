@@ -328,7 +328,7 @@
             
             foreach ($this->_args as $arg => $value) {
                 if (array_key_exists($arg, $this->_argMethodMap)) {
-                    call_user_method_array($this->_argMethodMap[$arg], $this, array($value));
+                    call_user_func_array(array($this, $this->_argMethodMap[$arg]), array($value));
                 }
             }
             
