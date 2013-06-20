@@ -812,7 +812,7 @@
                 else
                     $configPath = Mage_Core_Model_Store::XML_PATH_UNSECURE_BASE_URL;
                 
-                if ($this->_scope == 'default' || $this->_scopeId == 'stores') {
+                if ($this->_scope == 'default' || $this->_scope == 'stores') {
                     $scope = 'store';
                     $scopeCode = Mage::app()->getStore($this->_scopeId)->getCode();
                     $oldBaseUrl = Mage::getStoreConfig($configPath, $this->_scopeId);
