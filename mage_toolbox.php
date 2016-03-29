@@ -976,7 +976,7 @@
             //file and directory permissions
             shell_exec('find '.$this->_getRootPath().' -type d -exec chmod 755 {} \;');
             shell_exec('find '.$this->_getRootPath().' -type f -exec chmod 644 {} \;');
-            shell_exec('chmod -R 775 '.$this->_getRootPath().DS."src".DS."app".DS."etc");
+            shell_exec('chmod -R 775 '.$this->_getRootPath().DS."app".DS."etc");
             shell_exec('find '.$this->_getRootPath().' -name var -type d -exec chmod -R 775 {} \;');
             shell_exec('find '.$this->_getRootPath().' -name media -type d -exec chmod -R 775 {} \;');
 
