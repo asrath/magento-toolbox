@@ -128,13 +128,13 @@
             $fileInclude = 'app'.self::DS.'Mage.php';
             
             if (empty($this->_rootPath)) {
-                if (empty($magentoRoot))
+                if (empty($magentoRoot)) {
                     $magePath = $pwd.$fileInclude;
-                else
+                } else {
                     $magePath = $pwd.$magentoRoot.self::DS.$fileInclude;
+                }
 
-                if (!file_exists($magePath))
-                {
+                if (!file_exists($magePath)) {
                     //find first ocurrence of Mage.php exclude .svn directories to speed up the search
                     //$results = shell_exec("find $pwd -name Mage.php -type f | sed 1q");
                     $results = shell_exec('find '.$pwd.' -name Mage.php -a ! -name *.svn* -type f | sed 1q');
@@ -145,8 +145,11 @@
                     array_splice($pathArray, count($pathArray)-2);
 
                     $magentoRoot = array_diff($pathArray, $pwdArray);
-                    if (count($magentoRoot) > 0) $magentoRoot = implode(self::DS, $magentoRoot);
-                    else $magentoRoot = '';
+                    if (count($magentoRoot) > 0) {
+                        $magentoRoot = implode(self::DS, $magentoRoot);
+                    } else {
+                        $magentoRoot = '';
+                    }
 
                     //self modify the $magentoRoot declaration line at the begining of this script
                     $data = file(__FILE__, FILE_IGNORE_NEW_LINES);
@@ -155,13 +158,13 @@
                     
                 }
                 
-                if (empty($magentoRoot))
+                if (empty($magentoRoot)) {
                     $this->_rootPath = $pwd;
-                else
+                } else {
                     $this->_rootPath = $pwd.$magentoRoot.self::DS;
+                }
                 
-                if (!file_exists($this->_rootPath.'app'.self::DS.'Mage.php'))
-                {
+                if (!file_exists($this->_rootPath.'app'.self::DS.'Mage.php')) {
                     die('ERROR!!!! The Magento root filepath provided is not correct ('.$magentoRoot.').'.$n.'Edit the file and provide a '.$magentoRoot.' relative to this file path'.$n.$n);
                 }
             }
@@ -240,7 +243,7 @@
                 } else {
                     if ($current) {
                         $this->_args[$current] = $arg;
-                    } else if (preg_match('#^([\w\d_]{1,})$#', $arg, $match)) {
+                    } elseif (preg_match('#^([\w\d_]{1,})$#', $arg, $match)) {
                         $this->_args[$match[1]] = true;
                     }
                 }
@@ -312,8 +315,7 @@
             echo 'Usage: php ', $_script, ' [OPTION]', $n, $n;
             echo 'List of options:', $n;
 
-            foreach ($helpMessages as $msg)
-            {
+            foreach ($helpMessages as $msg) {
                 echo $msg, $n;
             }
         }
@@ -358,19 +360,15 @@
                     if (!empty($scope) && !empty($code)) {
                         $result['scope'] = $scope;
                         $result['code'] = $code;
-                    }
-                    elseif (empty($scope)) {
+                    } elseif (empty($scope)) {
                         $result['error'] = 'Scope cannot be empty'.$n;
-                    }
-                    elseif (empty($code)) {
+                    } elseif (empty($code)) {
                         $result['error'] = 'Scope code cannot be empty'.$n;
                     }
-                }
-                else {
+                } else {
                     $result['error'] = $incorrectFormatMsg;
                 }
-            }
-            else {
+            } else {
                 $result['error'] = $incorrectFormatMsg;
             }
             
@@ -390,36 +388,28 @@
                 $parsedScope = $this->_parseScopeValue($arg);
                 if (isset($parsedScope['error']) && !empty($parsedScope['error'])) {
                     echo $parsedScope['error'];
-                }
-                else {
+                } else {
                     if (!empty($parsedScope['scope']) && $parsedScope['scope'] == 'website') {
-                        try
-                        {
+                        try {
                             //get the website and its config values in a try catch block
                             //in order to avoid errors if the scope code is incorrect
                             $this->_scopeId = Mage::app()->getWebsite($parsedScope['code'])->getId();
                             $this->_scope = $parsedScope['scope'].'s';
-                        }
-                        catch (Exception $e)
-                        {
+                        } catch (Exception $e) {
                             echo 'The website code does not exist', $n;
                         }
                     } elseif (!empty($parsedScope['scope']) && $parsedScope['scope'] == 'store') {
-                        try
-                        {
+                        try {
                             //get the store and its config values in a try catch block
                             //in order to avoid errors if the scope code is incorrect
                             $this->_scopeId = Mage::app()->getStore($parsedScope['code'])->getId();
                             $this->_scope = $parsedScope['scope'].'s';
-                        }
-                        catch (Exception $e)
-                        {
+                        } catch (Exception $e) {
                             echo 'The store code does not exist', $n;
                         }
                     }
                 }
-            }
-            else {
+            } else {
                 echo 'Scope cannot be empty', $n;
             }
         }
@@ -431,8 +421,7 @@
         {
             extract($this->_commonVars);
             
-            if (file_exists($this->_configPath))
-            {
+            if (file_exists($this->_configPath)) {
                 //get database info
                 $dom = new DOMDocument();
                 $dom->load($this->_configPath);
@@ -463,12 +452,13 @@
 
                 $indexer = Mage::getSingleton('index/indexer');
                 $indexes = "";
-                foreach ($indexer->getProcessesCollection() as $process)
-                {
-                    if ($process->getData('mode') == 'manual') $processMode = OutputCLI::format('Manual', 'yellow');
-                    else $processMode = OutputCLI::format('Real time', 'green');
-                    switch ($process->getStatus())
-                    {
+                foreach ($indexer->getProcessesCollection() as $process) {
+                    if ($process->getData('mode') == 'manual') {
+                        $processMode = OutputCLI::format('Manual', 'yellow');
+                    } else {
+                        $processMode = OutputCLI::format('Real time', 'green');
+                    }
+                    switch ($process->getStatus()) {
                         case Mage_Index_Model_Process::STATUS_PENDING:
                             $processStatus = OutputCLI::format('Ready', 'green');
                             break;
@@ -485,8 +475,9 @@
                     $indexes .= OutputCLI::columnize($process->getIndexerCode(), 0, $processStatus. ' ('.$processMode.')', self::SECOND_COLUMN_LEFT). $n;
                 }
 
-                if (file_exists($this->_pathVarFallback))
+                if (file_exists($this->_pathVarFallback)) {
                     echo OutputCLI::format('/tmp/magento directory detected!!!'.$n.'Check filesystem permissions and remove it.', 'red'), $n, $n;
+                }
 
                 echo 'Database info:',$n,'---------------',$n;
                 echo OutputCLI::columnize('DB Host:', 0, $host, self::SECOND_COLUMN_LEFT).$n;
@@ -515,20 +506,16 @@
         {
             $scope = 'default';
             $scopeId = Mage_Core_Model_App::ADMIN_STORE_ID;
-            if ($_scope == 'stores')
-            {
+            if ($_scope == 'stores') {
                 $_scopeId = Mage::app()->getStore($_scopeId)->getWebsiteId();
                 $_scope = 'websites';
-            }
-            elseif ($_scope == 'websites')
-            {
+            } elseif ($_scope == 'websites') {
                 $_scope = $scope;
                 $_scopeId = $scopeId;
             }
             $query = "SELECT * FROM core_config_data WHERE path='$configPath' AND (scope = '$_scope' OR scope = '$scope') AND (scope_id = $_scopeId OR scope_id = $scopeId) ORDER BY scope DESC LIMIT 1";
             $data = Mage::getSingleton('core/resource')->getConnection('core_read')->fetchAll($query);
-            if (!empty($data) && $data[0]['scope'] != 'default')
-            {
+            if (!empty($data) && $data[0]['scope'] != 'default') {
                 //remove the last character 's' appended by magento
                 $scope = ($data[0]['scope'] == 'websites' || $data[0]['scope'] == 'stores') ? substr($data[0]['scope'], 0, -1) : $data[0]['scope'];
                 $scopeId = $data[0]['scope_id'];
@@ -548,32 +535,30 @@
             $result = FALSE;
             $cacheDir = $this->_rootPath.'var'.DS.'cache'.DS;
             $fallbackCacheDir = $this->_pathVarFallback.'var'.DS.'cache'.DS;
-            if (file_exists($this->_pathVarFallback))
-            {
+            if (file_exists($this->_pathVarFallback)) {
                 echo OutputCLI::format('/tmp/magento directory detected!!!'.$n.'Check filesystem permissions and remove it.', 'red'), $n, $n;
                 $command = 'rm -rf '.$fallbackCacheDir.'*';
                 shell_exec($command);
                 echo '/tmp/magento caches cleaned!!!', $n;
                 $result = TRUE;
             }
-            if (file_exists($cacheDir))
-            {
+            if (file_exists($cacheDir)) {
                 $command = 'rm -rf '.$cacheDir.'*';
                 shell_exec($command);
                 echo 'Caches cleaned!!!', $n;
                 $result = TRUE;
-            }
-            else
+            } else {
                 echo OutputCLI::format('Caches could not be cleaned. You must clean them manually.', 'red'), $n;
+            }
 
             //flush or restart memcached
             $memcachedPath = DS.'etc'.DS.'init.d'.DS.'memcached';
-            if (file_exists($memcachedPath))
-            {
-                if (file_exists(DS.'usr'.DS.'bin'.DS.'nc'))
+            if (file_exists($memcachedPath)) {
+                if (file_exists(DS.'usr'.DS.'bin'.DS.'nc')) {
                     shell_exec("echo 'flush_all' | nc localhost 11211");
-                else
+                } else {
                     shell_exec("$memcachedPath restart");
+                }
                 
                 echo 'Memcached emptied!!!', $n;
             }
@@ -594,8 +579,7 @@
          * 
          * @param string $arg Index code
          */
-        public function reindex($arg)
-        {
+        public function reindex($arg) {
             extract($this->_commonVars);
             $indexerScript = $this->_rootPath.'shell'.DS.'indexer.php';
             $availableIndexes = $this->_getIndexList();
@@ -607,8 +591,7 @@
                 default:
                     if (in_array($arg, array_keys($availableIndexes))) {
                         $command = "php $indexerScript --reindex $arg";
-                    }
-                    else {
+                    } else {
                         echo 'Usage: php ', $_script. ' -i [all|index]', $n, $n;
                         echo 'Available indexes:', $n;
                         foreach ($availableIndexes as $code => $name) {
@@ -618,7 +601,9 @@
                     break;
             }
             
-            if (isset($command) && !empty($command)) echo shell_exec($command);
+            if (isset($command) && !empty($command)) {
+                echo shell_exec($command);
+            }
         }
         
         /**
@@ -680,7 +665,9 @@
                     break;
             }
             
-            if (isset($command) && !empty($command)) echo shell_exec($command);
+            if (isset($command) && !empty($command)) {
+                echo shell_exec($command);
+            }
         }
         
         /**
@@ -696,7 +683,9 @@
                 $dbData = explode(';', $arg);
                 if (count($dbData) >= 3) {
                     //default value for host
-                    if (count($dbData == 3)) $dbData []= 'localhost';
+                    if (count($dbData == 3)) {
+                        $dbData []= 'localhost';
+                    }
                     list($dbUser,$dbPassword,$dbName,$dbHost) = $dbData;
 
                     $dom = new DOMDocument();
@@ -714,12 +703,10 @@
                     $this->cleanCache();
 
                     echo $this->_configPath, ' has been changed', $n;
-                }
-                else {
+                } else {
                     echo 'Incorrect data. You need to specify dbuser, dbpassword and dbname (host is optional) in this format: "dbuser;dbpassword;dbname[;dbhost]"', $n;
                 }
-            }
-            else {
+            } else {
                 echo $this->_configPath, ' cannot be found', $n;
             }
         }
@@ -737,11 +724,9 @@
                 $username = $arg;
                 if (isset($this->_args['password']) && $this->_args['password'] !== TRUE) {
                     $password = $this->_args['password'];
-                }
-                elseif (isset($this->_args['p']) && $this->_args['p'] !== TRUE) {
+                } elseif (isset($this->_args['p']) && $this->_args['p'] !== TRUE) {
                     $password = $this->_args['p'];
-                }
-                else {
+                } else {
                     $password = 'admin';
                     echo 'No password specified, "', $password, '" will be used', $n;
                 }
@@ -758,12 +743,10 @@
                     echo 'Old hash was:', $n;
                     echo "\t", $oldHash, $n;
                     echo 'User "', $username, '" password has been changed', $n;
-                }
-                else {
+                } else {
                     echo 'User "', $username, '" does not exist', $n;
                 }
-            }
-            else {
+            } else {
                 echo 'User cannot be empty', $n;
             }
         }
@@ -802,42 +785,43 @@
             if ($arg === TRUE) {
                 $argOK = TRUE;
                 $arg = '';
+            } else {
+                $argOK = $this->_checkUrl($arg);
             }
-            else $argOK = $this->_checkUrl($arg);
             
             if ($argOK) {
                 $baseUrl = $arg;
-                if ($type == 'secure')
+                if ($type == 'secure') {
                     $configPath = Mage_Core_Model_Store::XML_PATH_SECURE_BASE_URL;
-                else
+                } else {
                     $configPath = Mage_Core_Model_Store::XML_PATH_UNSECURE_BASE_URL;
+                }
                 
                 if ($this->_scope == 'default' || $this->_scope == 'stores') {
                     $scope = 'store';
                     $scopeCode = Mage::app()->getStore($this->_scopeId)->getCode();
                     $oldBaseUrl = Mage::getStoreConfig($configPath, $this->_scopeId);
-                }
-                else {
+                } else {
                     $scope = 'website';
                     $scopeCode = Mage::app()->getWebsite($this->_scopeId)->getCode();
                     $oldBaseUrl = Mage::app()->getWebsite($this->_scopeId)->getConfig($configPath);
                 }
                 
-                if (!empty($baseUrl))
-                    Mage::getConfig()->saveConfig($configPath, $baseUrl, $this->_scope, $this->_scopeId);
                 //we don't remove the config value if it's the admin store
-                elseif(empty($baseUrl) && $this->_scopeId !== Mage_Core_Model_App::ADMIN_STORE_ID)
+                if (!empty($baseUrl)) {
+                    Mage::getConfig()->saveConfig($configPath, $baseUrl, $this->_scope, $this->_scopeId);
+                } elseif (empty($baseUrl) && $this->_scopeId !== Mage_Core_Model_App::ADMIN_STORE_ID) {
                     Mage::getConfig()->deleteConfig($configPath, $this->_scope, $this->_scopeId);
+                }
 
                 //important to clear caches for the changes to take effect
                 $this->cleanCache();
 
-                if (!empty($baseUrl))
+                if (!empty($baseUrl)) {
                     echo ucfirst($type), ' base url changed from ', $oldBaseUrl, ' to ', $baseUrl, ' for ', $scope, ' ', $scopeCode, $n;
-                elseif (empty($baseUrl) && $this->_scopeId !== Mage_Core_Model_App::ADMIN_STORE_ID)
+                } elseif (empty($baseUrl) && $this->_scopeId !== Mage_Core_Model_App::ADMIN_STORE_ID) {
                     echo ucfirst($type), ' base url ', $oldBaseUrl, ' deleted from ', $scope, ' ', $scopeCode, $n;
-                elseif (empty($baseUrl) && $this->_scopeId === Mage_Core_Model_App::ADMIN_STORE_ID)
-                {
+                } elseif (empty($baseUrl) && $this->_scopeId === Mage_Core_Model_App::ADMIN_STORE_ID) {
                     echo ucfirst($type), ' base url cannot be empty for ', $scope, ' ', $scopeCode, $n;
                     echo ucfirst($type), ' base url ', $oldBaseUrl, ' has not been changed for ', $scope, ' ', $scopeCode, $n;
                 }
@@ -879,8 +863,7 @@
                 foreach ($stores as $store) {
                     echo '    ', $store->getData('code'), $n;
                 }
-            }
-            else {
+            } else {
                 try {
                     //get the store and its config values in a try catch block
                     //in order to avoid errors if the $storeCode is incorrect
@@ -893,8 +876,7 @@
                         Mage::getConfig()->saveConfig('dev/debug/template_hints', '1', 'stores', $store->getId());
                         Mage::getConfig()->saveConfig('dev/debug/template_hints_blocks', '1', 'stores', $store->getId());
                         echo 'Template hints for the store ', $storeCode, ' have been enabled',$n;
-                    }
-                    else {
+                    } else {
                         Mage::getConfig()->saveConfig('dev/debug/template_hints', "0", 'stores', $store->getId());
                         Mage::getConfig()->saveConfig('dev/debug/template_hints_blocks', "0", 'stores', $store->getId());
                         echo 'Template hints for the store ', $storeCode, ' have been disabled',$n;
@@ -903,8 +885,7 @@
                     //important to clear caches for the changes to take effect
                     //also the getConfig method uses the cache when returning the values
                     $this->cleanCache();
-                }
-                catch (Exception $e) {
+                } catch (Exception $e) {
                     echo 'The store code does not exist', $n;
                     //echo $e->getMessage();
                 }
@@ -925,8 +906,7 @@
             if (file_exists($absolutePath)) {
                 try {
                     include $absolutePath;
-                }
-                catch (Exception $e) {
+                } catch (Exception $e) {
                     echo $e->getMessage();
                 }
                 echo $n;
@@ -969,7 +949,9 @@
             //file ownership
             echo 'Changing ownership of ', $this->_getRootPath(), ' and subdirectories ...', $n;
             $command = 'chown -R $USER:'.$group.' '.$this->_getRootPath();
-            if ($_user != 'root') $command = 'sudo '. $command;
+            if ($_user != 'root') {
+                $command = 'sudo '. $command;
+            }
             shell_exec($command);
 
             echo 'Fixing permissions of ', $this->_getRootPath(), ' and subdirectories ...', $n;
